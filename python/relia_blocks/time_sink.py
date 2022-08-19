@@ -5,7 +5,7 @@ import shutil
 import numpy as np
 from gnuradio import gr
 
-from .api import uploader
+from relia_blocks.api import uploader
 
 class abstract_time_sink(gr.sync_block):
 
