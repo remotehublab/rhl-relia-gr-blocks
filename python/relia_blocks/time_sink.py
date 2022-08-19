@@ -74,7 +74,7 @@ class abstract_time_sink(gr.sync_block):
 
         uploader.upload_block_data(self.identifier(), data)
 
-        time.sleep(0.5)
+        time.sleep(0.1)
         return len(input_items[0])
 
 class time_sink_c(abstract_time_sink):
