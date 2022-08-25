@@ -61,6 +61,9 @@ class abstract_time_sink(gr.sync_block):
             'block_type': 'relia_time_sink_x',
             'type': self.input_data_type.__name__,
             'params': {
+                'srate': self.srate,
+                'nop': self.nop,
+                'autoscale': self.autoscale,
             },
             'data': {
                 'streams': {
