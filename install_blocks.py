@@ -32,13 +32,17 @@ else:
 DEFAULT_HIER_BLOCK_LIB_DIR = os.path.expanduser('~/.grc_gnuradio')
 
 if 'windows' in platform.system().lower():
-    pass
+    for filename in glob.glob(os.path.join(repo_dir, "blocks", "*.block.yml")):
+        base_filename = os.path.basename(filename)
+        target_file = os.path.join(DEFAULT_HIER_BLOCK_LIB_DIR, base_filename)
+
+        print(f"Overriding {filename} in {target_file}")
+        shutil.copyfile(filename, target_file)
 else:
     for filename in glob.glob(os.path.join(repo_dir, "blocks", "*.block.yml")):
         base_filename = os.path.basename(filename)
         target_file = os.path.join(DEFAULT_HIER_BLOCK_LIB_DIR, base_filename)
 
-        print("Checking if {target_file} is a symlink pointing to {base_filename}...")
         if not os.path.exists(target_file):
             print(f"Creating symlink {target_file} -> {filename}")
             os.symlink(filename, target_file)
