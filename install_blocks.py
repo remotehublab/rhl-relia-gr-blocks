@@ -3,7 +3,7 @@ import sys
 import glob
 import platform
 
-repo_dir = os.path.dirname(__file__)
+repo_dir = os.path.abspath(os.path.dirname(__file__))
 
 # First, check the RELIA_GR_PYTHON_PATH environment variable
 
