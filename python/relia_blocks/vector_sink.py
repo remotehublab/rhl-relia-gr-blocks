@@ -5,7 +5,7 @@ import shutil
 import numpy as np
 from gnuradio import gr
 
-from relia_blocks.api import uploader
+from relia_blocks.api import uploader, downloader
 
 class vector_sink_f(gr.sync_block):
 
@@ -20,6 +20,8 @@ class vector_sink_f(gr.sync_block):
             in_sig=[(np.float32, vlen)],
             out_sig=[],
         )
+
+        downloader.register_block(self.identifier(), self)
         
         ##################################################
         # Parameters
@@ -83,6 +85,16 @@ class vector_sink_f(gr.sync_block):
 		# time.sleep(0.1)
         # input_items_bytes = input_items[0].tobytes()
         # self._rdb.set('relia-time-sink-0', input_items_bytes)
+
+        web_data = downloader.get_data(self.identifier())
+        if web_data:
+            # TODO
+            print()
+            print('*' * 100)
+            print(web_data)
+            print('*' * 100)
+            print()
+
 
         stream_0 = []
         if len(input_items[0]):
