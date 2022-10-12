@@ -92,8 +92,11 @@ class vector_sink_f(gr.sync_block):
             'block_type': 'relia_vector_sink_f',
             'type': self.input_data_type[0].__name__,
             'params': {
-#                'nop': self.nop,
-#		 		'autoscale': self.autoscale,
+                'vlen': self.vlen,
+		 		'x_start': self.x_start,
+		 		'x_step': self.x_step,
+		 		'x_axis_label': self.x_axis_label,
+		 		'y_axis_label': self.y_axis_label,
             },
             'data': {
                 'streams': {
