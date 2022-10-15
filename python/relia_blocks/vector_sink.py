@@ -45,7 +45,7 @@ class vector_sink_f(gr.sync_block):
         self.x_start = x_start
 
     def get_x_start(self):
-        return x_start
+        return self.x_start
 
     def set_x_step(self, x_step):
         self.x_step = x_step

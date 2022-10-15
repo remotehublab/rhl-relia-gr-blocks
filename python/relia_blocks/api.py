@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import queue
 import logging
 import threading
 
@@ -9,6 +10,12 @@ logger = logging.getLogger(__name__)
 import requests
 
 from typing import Optional, List
+
+class ReliaBlockError(Exception):
+    pass
+
+class ReliaBlockClientError(ReliaBlockError):
+    pass
 
 class DataExchanger:
     def __init__(self):
@@ -26,25 +33,28 @@ class DataExchanger:
 
 class DataUploader(DataExchanger):
     def upload_block_data(self, block_identifier: str, data: dict):
-        result = requests.post(self.uploader_base_url + f'/api/upload/sessions/{self.session_identifier}/devices/{self.device_identifier}/blocks/{block_identifier}', json=data).json()
+        url = self.uploader_base_url + f'/api/upload/sessions/{self.session_identifier}/devices/{self.device_identifier}/blocks/{block_identifier}'
+        result = requests.post(url, json=data).json()
         if not result['success']:
-            # TODO
-            print(result)
+            logger.error("Error in request to {url}: {result}")
+            raise ReliaBlockClientError("Error receiving data from data uploader: {result}")
 
 class DataDownloader(DataExchanger):
     def __init__(self):
         super().__init__()
         self.blocks = {
             # identifier: {
-            #    'pending': [],
+            #    'pending': Queue,
             #    'block': <instance of the block>,
+            #    'callback': function(data_item)
             # }
         }
 
-    def register_block(self, identifier: str, block):
+    def register_block(self, identifier: str, block, callback = None):
         self.blocks[identifier] = {
             'block': block,
-            'pending': [],
+            'pending': queue.Queue(),
+            'callback': callback,
         }
 
     def get_data(self, block_identifier: str, flattened: bool = True):
@@ -52,9 +62,13 @@ class DataDownloader(DataExchanger):
             raise KeyError(f"Cannot find block_identifier {block_identifier}. Did you call register_block first?")
 
         data = []
-        while len(self.blocks[block_identifier]['pending']) > 0:
-            item = self.blocks[block_identifier]['pending'].pop()
-            data.append(item)
+        while not self.blocks[block_identifier]['pending'].empty():
+            try:
+                item = self.blocks[block_identifier]['pending'].get_nowait()
+            except queue.Empty:
+                break
+            else:
+                data.append(item)
 
         if flattened:
             flattened_data = {}
@@ -68,22 +82,64 @@ class DataDownloader(DataExchanger):
         if not self.blocks:
             time.sleep(0.1)
             return
+
         blocking_str = '1' if blocking else '0'
         url = self.uploader_base_url + f'/api/download/sessions/{self.session_identifier}/devices/{self.device_identifier}?blocking={blocking_str}'
         try:
             response = requests.get(url).json()
             if not response['success']:
+                logger.error(f"Error in the data obtained from data downloader with url {url}: {response}")
+                time.sleep(0.5) # Don't check again immediately
                 return
 
         except Exception as err:
             logger.error(f"Error downloading data from data downloader with url {url}: {err}", exc_info=True)
-            time.sleep(0.1)
+            time.sleep(0.5) # Do not check again immediately
             return
-        
+
         for block_identifier, block_data_list in response['data'].items():
             if block_identifier in self.blocks:
                 for block_data in block_data_list:
-                    self.blocks[block_identifier]['pending'].append(block_data)
+                    self.blocks[block_identifier]['pending'].put(block_data)
+
+        if not blocking:
+            time.sleep(0.5)
+
+        # If blocking, no need to add time.sleep() because the uploader method is per se slow
+
+    def drain_blocks_data(self):
+        if not self.blocks:
+            time.sleep(1)
+
+        t0 = time.time()
+
+        any_callback_registered = False
+
+        for block_identifier, block_data in self.blocks.items():
+            if block_data['callback'] is not None:
+                any_callback_registered = True
+                while not block_data['pending'].empty():
+                    try:
+                        data_item = block_data['pending'].get_nowait()
+                    except queue.Empty:
+                        break
+                    else:
+                        try:
+                            block_data['callback'](data_item)
+                        except Exception as err:
+                            logger.error(f"Error running callback {block_data['callback']} of block {block_identifier}: {err}", exc_info=True)
+
+        if not any_callback_registered:
+            # No need to check often
+            time.sleep(1)
+        else:
+            max_delay = 0.1
+            elapsed = time.time() - t0
+            # if elapsed is 0.001, wait for 0.999
+            # if elapsed is -5, wait 0
+            time_to_wait = max(0, max_delay - elapsed)
+            if time_to_wait > 0:
+                time.sleep(time_to_wait)
 
 class DownloadingThread(threading.Thread):
     def __init__(self):
@@ -91,10 +147,29 @@ class DownloadingThread(threading.Thread):
 
     def run(self):
         while True:
-            downloader.download_blocks_data()
+            try:
+                downloader.download_blocks_data()
+            except Exception as err:
+                logger.error("Error in downloading thread: {err}", exc_info=True)
+                time.sleep(1)
+
+class DrainingThread(threading.Thread):
+    def __init__(self):
+        super().__init__(name="draining-thread", daemon=True)
+
+    def run(self):
+        while True:
+            try:
+                downloader.drain_blocks_data()
+            except Exception as err:
+                logger.error("Error in draining thread: {err}", exc_info=True)
+                time.sleep(1)
 
 uploader = DataUploader()
 downloader = DataDownloader()
 
 downloading_thread = DownloadingThread()
 downloading_thread.start()
+
+drawning_thread = DrainingThread()
+drawning_thread.start()
