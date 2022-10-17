@@ -1,8 +1,8 @@
 from PyQt5 import QtCore
 
-from relia_blocks.api import downloader
+from relia_blocks.api import downloader, VariableBlock
 
-class RangeWidget:
+class RangeWidget(VariableBlock):
     def __init__(self, identifier, ranges, slot, label, style, rangeType=float, orientation=QtCore.Qt.Horizontal):
         # slot is a callback to change things.
         # so calling self.slot(self.rangeType(value))
@@ -18,10 +18,19 @@ class RangeWidget:
         self.style = style
         self.orientation = orientation
 
-        downloader.register_block(identifier, self, callback=self.on_new_data)
+        super().__init__(identifier=identifier)
 
+    def get_data(self) -> dict:
+        return {
+            'params': {
+                'x_start': -16000,
+                'x_step': 100,
+                'vlen': 200
+            }
+        }
 
     def on_new_data(self, data_item):
+        print(f"New data in {self.identifier}: {data_item}")
         # TODO: process data_item
-        value = self.rangeType(data_item)
+        value = self.rangeType(data_item['value'])
         self.slot(value)

@@ -129,6 +129,9 @@ class DataDownloader(DataExchanger):
                         except Exception as err:
                             logger.error(f"Error running callback {block_data['callback']} of block {block_identifier}: {err}", exc_info=True)
 
+                if hasattr(block_data['block'], 'tick'):
+                    block_data['block'].tick()
+
         if not any_callback_registered:
             # No need to check often
             time.sleep(1)
@@ -164,6 +167,35 @@ class DrainingThread(threading.Thread):
             except Exception as err:
                 logger.error("Error in draining thread: {err}", exc_info=True)
                 time.sleep(1)
+
+class VariableBlock:
+    def __init__(self, identifier):
+        self.identifier = identifier
+        self.last_tick = 0
+        self.last_data_json = ""
+
+        downloader.register_block(identifier, self, callback=self.on_new_data)
+
+    def get_data(self) -> dict:
+        return {"value": None}
+
+    def tick(self):
+        data = self.get_data()
+        data_json = json.dumps(data)
+        if data_json != self.last_data_json:
+            uploader.upload_block_data(self.identifier, data)
+            self.last_data_json = data_json
+            self.last_tick = time.time()
+            return
+
+        # Same data as last time, check time
+        elapsed = time.time() - self.last_tick
+        if elapsed > 30: # Every 30 seconds send the same data
+            uploader.upload_block_data(self.identifier, data)
+            self.last_data_json = data_json
+            self.last_tick = time.time()
+            return
+        return
 
 uploader = DataUploader()
 downloader = DataDownloader()
