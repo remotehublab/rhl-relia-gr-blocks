@@ -169,12 +169,22 @@ class DrainingThread(threading.Thread):
                 time.sleep(1)
 
 class VariableBlock:
-    def __init__(self, identifier):
+    def __init__(self, identifier, callback):
         self.identifier = identifier
         self.last_tick = 0
         self.last_data_json = ""
 
-        downloader.register_block(identifier, self, callback=self.on_new_data)
+        self.force_tick = False
+        self._callback = callback
+
+        downloader.register_block(identifier, self, callback=self.variable_block_callback)
+
+    def variable_block_callback(self, data):
+        if isinstance(data, dict) and data.get('forceUploadData'):
+            self.force_tick = True
+            return
+
+        return self._callback(data)
 
     def get_data(self) -> dict:
         return {"value": None}
@@ -182,7 +192,8 @@ class VariableBlock:
     def tick(self):
         data = self.get_data()
         data_json = json.dumps(data)
-        if data_json != self.last_data_json:
+        if self.force_tick or data_json != self.last_data_json:
+            self.force_tick = False
             uploader.upload_block_data(self.identifier, data)
             self.last_data_json = data_json
             self.last_tick = time.time()
@@ -190,7 +201,7 @@ class VariableBlock:
 
         # Same data as last time, check time
         elapsed = time.time() - self.last_tick
-        if elapsed > 30: # Every 30 seconds send the same data
+        if elapsed > 1: # Every second send the same data
             uploader.upload_block_data(self.identifier, data)
             self.last_data_json = data_json
             self.last_tick = time.time()

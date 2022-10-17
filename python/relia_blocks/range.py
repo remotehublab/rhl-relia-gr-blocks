@@ -18,19 +18,20 @@ class RangeWidget(VariableBlock):
         self.style = style
         self.orientation = orientation
 
-        super().__init__(identifier=identifier)
+        super().__init__(identifier=identifier, callback=self.on_new_data)
 
     def get_data(self) -> dict:
         return {
             'params': {
-                'x_start': -16000,
-                'x_step': 100,
-                'vlen': 200
+                'min': self.ranges.min,
+                'step': self.ranges.step,
+                'max': self.ranges.max,
+                'default': self.ranges.default,
+                'min_length': self.ranges.min_length,
             }
         }
 
     def on_new_data(self, data_item):
         print(f"New data in {self.identifier}: {data_item}")
-        # TODO: process data_item
         value = self.rangeType(data_item['value'])
         self.slot(value)
