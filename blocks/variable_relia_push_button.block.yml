@@ -1,0 +1,62 @@
+id: variable_relia_push_button
+label: RELIA Push Button
+flags: [ show_id, python ]
+
+parameters:
+-   id: label
+    label: Label
+    dtype: string
+    hide: ${ ('none' if label else 'part') }
+-   id: type
+    label: Type
+    dtype: enum
+    default: int
+    options: [real, int, string, bool, raw]
+    option_labels: [Float, Integer, String, Boolean, Any]
+    option_attributes:
+        conv: [float, int, str, bool, eval]
+    hide: part
+-   id: value
+    label: Default Value
+    dtype: ${ type }
+    default: '0'
+-   id: pressed
+    label: Pressed
+    dtype: ${ type }
+    default: '1'
+-   id: released
+    label: Released
+    dtype: ${ type }
+    default: '0'
+-   id: gui_hint
+    label: GUI Hint
+    dtype: gui_hint
+    hide: part
+value: ${ value }
+
+templates:
+    imports: |-
+        import sys, os
+        from PyQt5 import QtCore
+        if 'RELIA_GR_PYTHON_PATH' in os.environ:
+            sys.path.append(os.environ.get('RELIA_GR_PYTHON_PATH'))
+        from gnuradio.filter import firdes
+        from gnuradio.qtgui import Range
+        import relia_blocks.push_button
+    var_make: self.${id} = ${id} = ${value}
+    callbacks:
+    - self.set_${id}(${value})
+    make: |-
+        <%
+            win = '_%s_push_button'%id
+        %>\
+        self._${id}_choices = {'Pressed': ${pressed}, 'Released': ${released}}
+        ${win} = relia_blocks.push_button.PushButtonWidget("RELIA Variable PushButton (${id})", self.set_${id}, self._${id}_choices)
+        ${win}.pressed(lambda: self.set_${id}(self._${id}_choices['Pressed']))
+        ${win}.released(lambda: self.set_${id}(self._${id}_choices['Released']))
+        
+documentation: |-
+    This block creates a variable push button. Leave the label blank to use the variable id as the label.
+    A push button selects between two values of similar type. The variable will take on one value or the other depending on whether the button is pressed or released.
+    The GUI hint can be used to position the widget within the application. The hint is of the form [tab_id@tab_index]: [row, col, row_span, col_span]. Both the tab specification and the grid position are optional.
+file_format: 1
