@@ -23,7 +23,6 @@ class PushButtonWidget(VariableBlock):
         self._push_button_released_callback = callback
 
     def on_new_data(self, data_item):
-        print("new data on push button:", data_item)
         new_state = data_item['value']
         self.state = new_state
 
