@@ -51,7 +51,7 @@ templates:
             win = '_%s_push_button'%id
         %>\
         self._${id}_choices = {'Pressed': ${pressed}, 'Released': ${released}}
-        ${win} = relia_blocks.push_button.PushButtonWidget("RELIA Variable PushButton (${id})", self._${id}_choices)
+        ${win} = relia_blocks.push_button.PushButtonWidget("RELIA Variable PushButton (${id})", self._${id}_choices, ${label})
         ${win}.pressed(lambda: self.set_${id}(self._${id}_choices['Pressed']))
         ${win}.released(lambda: self.set_${id}(self._${id}_choices['Released']))
         
