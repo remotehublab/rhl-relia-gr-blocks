@@ -150,10 +150,13 @@ templates:
             win = 'self._%s_tool_bar'%id
         %>\
 
-        ${win} = relia_blocks.chooser.ChooserWidget("RELIA Variable Chooser (${id})", self._${id}_options, self._${id}_labels)
+        ${win} = relia_blocks.chooser.ChooserWidget("RELIA Variable Chooser (${id})", self._${id}_options, self._${id}_labels, ${type})
         ${win}.change(self.${id})
         self._${id}_callback = lambda i: ${win}.change(i)
-        ${win}.on_change( lambda i: self.set_${id}(self._${id}_options[i]))
+
+        def on_change_option(option):
+          self.set_${id}(option)
+        ${win}.on_change(on_change_option)
 
 documentation: |-
     This block creates a variable with enumerated options. The gui widget is implemented as a combo box or radio button group. Leave the label blank to use the variable id as the label.
