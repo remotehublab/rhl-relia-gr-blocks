@@ -57,6 +57,20 @@ class abstract_time_sink(gr.sync_block):
 
         # input_items_bytes = input_items[0].tobytes()
         # self._rdb.set('relia-time-sink-0', input_items_bytes)
+
+        streams = {
+            # 0: {
+            #     'real': [ str(num) for num in input_items[0] ]
+            #     'imag': [ str(num) for num in input_items[0] ]
+            # }
+        }
+
+        for pos, input_item in enumerate(input_items):
+            streams[pos] = {
+                'real': [ str(num.real) for num in input_item],
+                'imag': [ str(num.imag) for num in input_item],
+            }
+
         data = {
             'block_type': 'relia_time_sink_x',
             'type': self.input_data_type.__name__,
@@ -66,12 +80,7 @@ class abstract_time_sink(gr.sync_block):
                 'autoscale': self.autoscale,
             },
             'data': {
-                'streams': {
-                    '0': {
-                        'real': [ str(num.real) for num in input_items[0]],
-                        'imag': [ str(num.imag) for num in input_items[0]],
-                    }
-                }
+                'streams': streams
             }
         }
 
