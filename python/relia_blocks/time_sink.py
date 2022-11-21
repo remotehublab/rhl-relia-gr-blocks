@@ -11,14 +11,14 @@ class abstract_time_sink(gr.sync_block):
 
     input_data_type = None
 
-    def __init__(self, nop=1024, srate=32*1024, autoscale=False, *args, **kwargs):
+    def __init__(self, nop=1024, srate=32*1024, autoscale=False, nconnections=1, *args, **kwargs):
 
         print(args, kwargs)
 
         gr.sync_block.__init__(
             self, 
             name="RELIA Time Sink",
-            in_sig=[self.input_data_type],
+            in_sig=[self.input_data_type] * nconnections,
             out_sig=[],
         )
         
