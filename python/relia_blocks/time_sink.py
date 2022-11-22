@@ -11,7 +11,7 @@ class abstract_time_sink(gr.sync_block):
 
     input_data_type = None
 
-    def __init__(self, nop=1024, srate=32*1024, autoscale=False, nconnections=1, *args, **kwargs):
+    def __init__(self, nop=1024, srate=32*1024, name="", nconnections=1, *args, **kwargs):
 
         print(args, kwargs)
 
@@ -27,7 +27,8 @@ class abstract_time_sink(gr.sync_block):
         ##################################################
         self.nop = nop
         self.srate = srate
-        self.autoscale = autoscale
+        self.name = name
+        self.nconnections = nconnections
 
 
     def get_nop(self):
@@ -42,11 +43,17 @@ class abstract_time_sink(gr.sync_block):
     def set_srate(self, srate):
         self.srate = srate
 
-    def get_autoscale(self):
-        return self.autoscale
+    def get_name(self):
+        return self.name
 
-    def set_autoscale(self, autoscale):
-        self.autoscale = autoscale
+    def set_name(self, name):
+        self.name = name
+
+    def get_nconnections(self):
+        return self.nconnections
+
+    def set_nconnections(self, nconnections):
+        self.nconnections = nconnections
 
     def say_hello(self):
         print("Hello!")
@@ -77,7 +84,8 @@ class abstract_time_sink(gr.sync_block):
             'params': {
                 'srate': self.srate,
                 'nop': self.nop,
-                'autoscale': self.autoscale,
+                'name': self.name,
+                'nconnections': self.nconnections,                
             },
             'data': {
                 'streams': streams
