@@ -1,0 +1,53 @@
+id: relia_eye_plot_x
+label: RELIA GUI Eye Plot
+
+parameters:
+-   id: nop
+    label: Number of Points
+    dtype: raw
+    default: '1024'
+    hide: none
+-   id: samp_rate
+    label: Sample Rate
+    dtype: raw
+    default: '32000'
+    hide: none
+-   id: time_delay
+    label: Time Delay
+    dtype: raw
+    default: '40'
+    hide: none
+-   id: gui_hint
+    label: GUI Hint
+    dtype: gui_hint
+    hide: part
+
+inputs:
+-   label: in
+    dtype: float
+    vlen: 1
+
+outputs: []
+
+templates:
+    imports: |-
+        import sys, os
+        if 'RELIA_GR_PYTHON_PATH' in os.environ:
+            sys.path.append(os.environ.get('RELIA_GR_PYTHON_PATH'))
+        from gnuradio.filter import firdes
+        import relia_blocks.eye_plot
+    callbacks: []
+    make: |-
+        relia_blocks.eye_plot.eye_plot(
+            ${nop}, #nop
+            ${samp_rate}, #samp_rate
+            ${time_delay}, #time_delay
+        )
+        self.${id}.say_hello()
+
+
+documentation: /Users/marcos/.grc_gnuradio/eye_plot.py
+grc_source: /Users/marcos/Documents/research/relia/ReliaProject/gr-engine/gr-engine-runner/relia-gr-runner/examples/eye_plot.grc
+
+file_format: 1
+
