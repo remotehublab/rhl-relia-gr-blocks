@@ -81,7 +81,7 @@ templates:
             range = 'self._%s_range'%id
         %>\ 
         ${range} = Range(${start}, ${stop}, ${step}, ${value}, ${min_len})
-        ${win} = relia_blocks.range.RangeWidget("RELIA Variable Range (${id})", ${range}, self.set_${id}, "${no_quotes(label,repr(id))}", "${widget}", ${rangeType}, ${orient})
+        ${win} = relia_blocks.range.RangeWidget("RELIA Variable Range (${id})", ${range}, self.set_${id}, "${'%s-%s'.format(label,repr(id))}", "${widget}", ${rangeType}, ${orient})
 
 documentation: |-
     This block creates a variable with a slider.     Leave the label blank to use the variable id as the label.     The value must be a real number.     The value must be between the start and the stop.
