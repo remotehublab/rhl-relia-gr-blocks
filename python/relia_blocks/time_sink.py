@@ -7,11 +7,25 @@ from gnuradio import gr
 
 from relia_blocks.api import uploader
 
+colorof = {    'black':'#000000' ,
+    'white': '#ffffff',
+    'red'  : '#ff0000',
+    'dark red':'#800000',
+    'green':'#00ff00',
+    'darkgreen':'#008000',
+    'blue':'#0000ff',
+    'dark blue':'#000080',
+    'yellow':'#ffff00',
+    'cyan':'#00ffff' ,
+    'magenta':'#ff00ff'
+    }
+
+
 class abstract_time_sink(gr.sync_block):
 
     input_data_type = None
 
-    def __init__(self, nop=1024, srate=32*1024, name="", nconnections=1, *args, **kwargs):
+    def __init__(self, nop=1024, srate=32*1024, name="", ylabel="Amplitude", yunit="", grid=False, autoscale=False, color1="blue", color2="red", nconnections=1, *args, **kwargs):
 
         print(args, kwargs)
 
@@ -28,8 +42,13 @@ class abstract_time_sink(gr.sync_block):
         self.nop = nop
         self.srate = srate
         self.name = name
+        self.ylabel = ylabel
+        self.yunit = yunit
+        self.grid = grid
+        self.autoscale = autoscale
+        self.color1 = color1
+        self.color2 = color2
         self.nconnections = nconnections
-
 
     def get_nop(self):
         return self.nop
@@ -54,6 +73,42 @@ class abstract_time_sink(gr.sync_block):
 
     def set_nconnections(self, nconnections):
         self.nconnections = nconnections
+
+    def get_ylabel(self):
+        return self.ylabel
+
+    def set_ylabel(self, ylabel):
+        self.ylabel = ylabel
+
+    def get_yunit(self):
+        return self.yunit
+
+    def set_yunit(self, yunit):
+        self.yunit = yunit
+
+    def get_grid(self):
+        return self.grid
+
+    def set_grid(self, grid):
+        self.grid = grid
+
+    def get_autoscale(self):
+        return self.autoscale
+
+    def set_autoscale(self, autoscale):
+        self.autoscale = autoscale
+
+    def get_color1(self):
+        return self.color1
+
+    def set_color1(self, color1):
+        self.color1 = color1
+
+    def get_color2(self):
+        return self.color2
+
+    def set_color2(self, color2):
+        self.color2 = color2
 
     def say_hello(self):
         print("Hello!")
@@ -86,6 +141,11 @@ class abstract_time_sink(gr.sync_block):
                 'nop': self.nop,
                 'name': self.name,
                 'nconnections': self.nconnections,                
+                'ylabel': self.ylabel,                
+                'yunit': self.yunit,                
+                'grid': self.grid,                
+                'autoscale': self.autoscale,                
+                'colors': [colorof[self.color1], colorof[self.color2]],               
             },
             'data': {
                 'streams': streams

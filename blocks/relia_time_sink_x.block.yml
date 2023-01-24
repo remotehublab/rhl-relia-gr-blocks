@@ -1009,6 +1009,12 @@ templates:
             ${size}, #size
             ${srate}, #samp_rate
             ${name}, #name
+            ${ylabel}, #ylabel
+            ${yunit}, #yunit
+            ${grid}, #grid
+            ${autoscale}, #autoscale
+            '${color1}', #color1
+            '${color2}', #color2            
             ${0 if type.startswith('msg') else nconnections} #number of inputs
         )
         self.${id}.say_hello()
