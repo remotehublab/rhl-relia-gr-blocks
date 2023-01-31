@@ -1013,11 +1013,14 @@ templates:
             ${yunit}, #yunit
             ${grid}, #grid
             ${autoscale}, #autoscale
-            '${color1}', #color1
-            '${color2}', #color2            
+            ${[color1, color2, color3, color4, color5, color6, color7, color8, color9, color10]}, #colors
+            ${[label1, label2, label3, label4, label5, label6, label7, label8, label9, label10]}, #labels
+            ${[width1, width2, width3, width4, width5, width6, width7, width8, width9, width10]}, #widths
+            ${[style1, style2, style3, style4, style5, style6, style7, style8, style9, style10]}, #styles
             ${0 if type.startswith('msg') else nconnections} #number of inputs
         )
         self.${id}.say_hello()
+        
 
 documentation: |-
     This is an example docs of the relia_time_sink_x
