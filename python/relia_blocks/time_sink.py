@@ -35,6 +35,8 @@ class abstract_time_sink(gr.sync_block):
         self.autoscale = autoscale
         self.colors = colors
         self.labels = labels
+        self.widths = widths
+        self.styles = styles
         self.nconnections = nconnections
         
 
@@ -92,8 +94,27 @@ class abstract_time_sink(gr.sync_block):
     def set_colors(self, colors):
         self.colors = colors
 
+    def get_labels(self):
+        return self.labels
+
+    def set_labels(self, labels):
+        self.labels = labels
+
+    def get_widths(self):
+        return self.widths
+
+    def set_widths(self, widths):
+        self.widths = widths
+
+    def get_styles(self):
+        return self.styles
+
+    def set_styles(self, styles):
+        self.styles = styles
+
     def say_hello(self):
         print("Hello!")
+        
 
     def work(self, input_items, output_items):
         # https://github.com/gnuradio/gnuradio/blob/b2c9623cbd548bd86250759007b80b61bd4a2a06/gr-qtgui/lib/time_sink_f_impl.cc#L496
@@ -128,7 +149,10 @@ class abstract_time_sink(gr.sync_block):
                 'grid': self.grid,                
                 'autoscale': self.autoscale,                
                 'colors': color_name2hex(self.colors),     
-                'labels': self.labels,                                         
+                'labels': self.labels,   
+                'widths': self.widths,   
+                'styles': style_number2dotdash(self.styles),   
+                                                      
             },
             'data': {
                 'streams': streams
