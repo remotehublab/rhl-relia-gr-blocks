@@ -20,6 +20,16 @@ style_table = { '1':['1', '0'] ,
  	
      }
 
+marker_table = {    '-1':'none' ,
+    '0': 'circle',
+    '1' : 'square',
+    '2':'diamond',
+    '3':'triangle',
+    '4':'star',
+    '5':'polygon',
+    }
+
+
 
 def color_name2hex(coloraname):
 	l=len(coloraname)
@@ -34,3 +44,10 @@ def style_number2dotdash(stylename):
 	for i in range(l):
 		style_output.append(style_table[stylename[i]])
 	return style_output
+
+def marker_number2shape(markername):
+	l=len(markername)
+	marker_output=[]
+	for i in range(l):
+		marker_output.append(marker_table[markername[i]])
+	return marker_output

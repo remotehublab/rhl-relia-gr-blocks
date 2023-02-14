@@ -12,7 +12,7 @@ class abstract_time_sink(gr.sync_block):
 
     input_data_type = None
 
-    def __init__(self, nop=1024, srate=32*1024, name="", ylabel="Amplitude", yunit="", grid=False, autoscale=False, colors=[],labels=[],widths=[],styles=[], nconnections=1, *args, **kwargs):
+    def __init__(self, nop=1024, srate=32*1024, name="", ylabel="Amplitude", yunit="", grid=False, autoscale=False, colors=[],labels=[],widths=[],styles=[],markers=[], nconnections=1, *args, **kwargs):
 
         print(args, kwargs)
 
@@ -37,6 +37,7 @@ class abstract_time_sink(gr.sync_block):
         self.labels = labels
         self.widths = widths
         self.styles = styles
+        self.markers = markers
         self.nconnections = nconnections
         
 
@@ -151,7 +152,8 @@ class abstract_time_sink(gr.sync_block):
                 'colors': color_name2hex(self.colors),     
                 'labels': self.labels,   
                 'widths': self.widths,   
-                'styles': style_number2dotdash(self.styles),   
+                'styles': style_number2dotdash(self.styles),  
+                'markers':  marker_number2shape(self.markers),
                                                       
             },
             'data': {

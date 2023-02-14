@@ -1017,6 +1017,7 @@ templates:
             ${[label1, label2, label3, label4, label5, label6, label7, label8, label9, label10]}, #labels
             ${[width1, width2, width3, width4, width5, width6, width7, width8, width9, width10]}, #widths
             ${[style1, style2, style3, style4, style5, style6, style7, style8, style9, style10]}, #styles
+            ${[marker1, marker2, marker3, marker4, marker5, marker6, marker7, marker8, marker9, marker10]}, #styles
             ${0 if type.startswith('msg') else nconnections} #number of inputs
         )
         self.${id}.say_hello()
