@@ -135,8 +135,7 @@ parameters:
     label: Line 1 Color
     category: Config
     dtype: enum
-    options: ['"blue"', '"red"', '"green"', '"black"', '"cyan"', '"magenta"', '"yellow"',
-        '"dark red"', '"dark green"', '"Dark Blue"']
+    options: ['blue', 'red', 'green', 'black', 'cyan', 'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
     option_labels: [Blue, Red, Green, Black, Cyan, Magenta, Yellow, Dark Red, Dark
             Green, Dark Blue]
     hide: ${ ('part' if int(nconnections) >= 1 else 'all') }
@@ -405,8 +404,19 @@ templates:
         relia_blocks.const_sink.${type.fcn}(
             ${size}, #size
             ${name}, #name
+            ${grid}, #grid
+            ${autoscale}, #autoscale
+            ${xmin}, #xmin
+            ${xmax}, #xmax
+            ${ymin}, #ymin
+            ${ymax}, #ymax
+            ${[color1, color2, color3, color4, color5, color6, color7, color8, color9, color10]}, #colors
+            ${[label1, label2, label3, label4, label5, label6, label7, label8, label9, label10]}, #labels
+            ${[width1, width2, width3, width4, width5, width6, width7, width8, width9, width10]}, #widths
+            ${[style1, style2, style3, style4, style5, style6, style7, style8, style9, style10]}, #styles
+            ${[marker1, marker2, marker3, marker4, marker5, marker6, marker7, marker8, marker9, marker10]}, #styles
             ${0 if type.startswith('msg') else nconnections}, #number of inputs
-            None # parent
+             None # parent
         )
         self.${id}.say_hello()
 

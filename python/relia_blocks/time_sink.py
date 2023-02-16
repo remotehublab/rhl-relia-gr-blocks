@@ -12,7 +12,7 @@ class abstract_time_sink(gr.sync_block):
 
     input_data_type = None
 
-    def __init__(self, nop=1024, srate=32*1024, name="", ylabel="Amplitude", yunit="", grid=False, autoscale=False, colors=[],labels=[],widths=[],styles=[],markers=[], nconnections=1, *args, **kwargs):
+    def __init__(self, nop=1024, srate=32*1024, name="", ylabel="Amplitude", yunit="", grid=False, autoscale=False, ymin=" ", ymax=" ", axislabels=True, colors=[],labels=[],widths=[],styles=[],markers=[], nconnections=1, *args, **kwargs):
 
         print(args, kwargs)
 
@@ -33,6 +33,9 @@ class abstract_time_sink(gr.sync_block):
         self.yunit = yunit
         self.grid = grid
         self.autoscale = autoscale
+        self.ymin=ymin
+        self.ymax=ymax
+        self.axislabels=axislabels
         self.colors = colors
         self.labels = labels
         self.widths = widths
@@ -113,6 +116,13 @@ class abstract_time_sink(gr.sync_block):
     def set_styles(self, styles):
         self.styles = styles
 
+    def get_axislabels(self):
+        return self.axislabels
+
+    def set_axislabels(self, axislabels):
+        self.axislabels = axislabels
+
+
     def say_hello(self):
         print("Hello!")
         
@@ -148,7 +158,10 @@ class abstract_time_sink(gr.sync_block):
                 'ylabel': self.ylabel,                
                 'yunit': self.yunit,                
                 'grid': self.grid,                
-                'autoscale': self.autoscale,                
+                'autoscale': self.autoscale,
+                'ymin': self.ymin,                
+                'ymax': self.ymax,  
+                'axislabels': self.axislabels,              
                 'colors': color_name2hex(self.colors),     
                 'labels': self.labels,   
                 'widths': self.widths,   

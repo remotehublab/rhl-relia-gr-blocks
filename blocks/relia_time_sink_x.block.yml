@@ -1013,6 +1013,9 @@ templates:
             ${yunit}, #yunit
             ${grid}, #grid
             ${autoscale}, #autoscale
+            ${ymin}, #ymin
+            ${ymax}, #ymax
+            ${axislabels}, #axisabels
             ${[color1, color2, color3, color4, color5, color6, color7, color8, color9, color10]}, #colors
             ${[label1, label2, label3, label4, label5, label6, label7, label8, label9, label10]}, #labels
             ${[width1, width2, width3, width4, width5, width6, width7, width8, width9, width10]}, #widths

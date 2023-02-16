@@ -20,10 +20,20 @@ class ChooserWidget(VariableBlock):
     def get_data(self) -> dict:
         return {
             'params': {
-                'options': self.options,
-                'labels': self.labels,
-                'state': self.state,
-            }
+                'nop': self.nop,
+                'name': self.name,
+                'nconnections': self.nconnections,                
+                'grid': self.grid,                
+                'autoscale': self.autoscale,
+                'xmin': self.xmin,                
+                'xmax': self.xmax,  
+                'ymin': self.ymin,                
+                'ymax': self.ymax,  
+                'colors': color_name2hex(self.colors),     
+                'labels': self.labels,   
+                'widths': self.widths,   
+                'styles': style_number2dotdash(self.styles),  
+                'markers':  marker_number2shape(self.markers),            }
         }
 
     def on_change(self, callback):
