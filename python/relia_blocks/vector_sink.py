@@ -1,4 +1,5 @@
 import time
+from relia_blocks.config_params import *
 import json
 import shutil
 
@@ -9,17 +10,17 @@ from relia_blocks.api import uploader, downloader
 
 class vector_sink_f(gr.sync_block):
 
-
-    def __init__(self, vlen=1024, x_start=0, x_step=1.0, x_axis_label="x-Axis", y_axis_label="y-Axis", name="", nconnections=1, parent=None, *args, **kwargs):
+    def __init__(self, vlen=1024, name="",x_start=0, x_step=1.0, x_axis_label="x-Axis", y_axis_label="y-Axis",  x_units="", y_units="", ref_level=0.0, grid=True, average=False,autoscale=False,ymin=-140.0,ymax=10.0, colors=[], labels=[], widths=[],nconnections=1, parent=None, *args, **kwargs):
 
         self.input_data_type = (np.float32, vlen)
 
         gr.sync_block.__init__(
             self, 
             name="RELIA Vector Sink",
-            in_sig=[(np.float32, vlen)],
+            in_sig=[(np.float32, vlen)]*nconnections,
             out_sig=[],
         )
+
 
         downloader.register_block(self.identifier(), self)
         
@@ -34,6 +35,18 @@ class vector_sink_f(gr.sync_block):
         self.name = name
         self.nconnections = nconnections
         # self.parent = parent
+        self.x_units = x_units
+        self.y_units = y_units
+        self.ref_level = ref_level
+        self.grid = grid
+        self.average = average
+        self.autoscale = autoscale
+        self.ymin = ymin
+        self.ymax = ymax
+        self.colors = colors
+        self.labels = labels
+        self.widths = widths
+
 
     def set_vlen(self, vlen):
         self.vlen = vlen
@@ -95,25 +108,60 @@ class vector_sink_f(gr.sync_block):
             print('*' * 100)
             print()
 
+#        stream_0 = []
+#        if len(input_items[0]):
+#            stream_0 = [ str(num) for num in input_items[0][-1] ]
 
-        stream_0 = []
-        if len(input_items[0]):
-            stream_0 = [ str(num) for num in input_items[0][-1] ]
+        streams = {
+            # 0: {
+            # }
+        }
+        x,y,z=np.shape(input_items)
+        temp=np.reshape(np.array(input_items),(x,y*z))
+        temp=temp[:,:self.vlen]
+        temp=temp.tolist()
+        #print(x,y,z)
+        #print(np.shape(input_items.squeeze()[[0, 2]]))
+        #temp=np.array([input_items[0][0][i] for i in range(self.nconnections)] + [input_items[0][2][i] for i in range(self.nconnections)])
+        #print (np.shape(temp))
+        for pos, input_item in enumerate(temp):
+             streams[pos] = {
+                 '0': [ str(num) for num in input_item],
+             }
+             #print(streams[0])
+        #print(type(streams))
 
         data = {
             'block_type': 'relia_vector_sink_f',
             'type': self.input_data_type[0].__name__,
             'params': {
                 'vlen': self.vlen,
-		 		'x_start': self.x_start,
-		 		'x_step': self.x_step,
-		 		'x_axis_label': self.x_axis_label,
-		 		'y_axis_label': self.y_axis_label,
+                'x_start': self.x_start,
+                'x_step': self.x_step,
+                'x_axis_label': self.x_axis_label,
+                'y_axis_label': self.y_axis_label,
+                'name': self.name,
+                'nconnections': self.nconnections,
+                'x_units': self.x_units,
+                'y_units': self.y_units,
+                'ref_level': self.ref_level,
+                'grid': self.grid,
+                'average': self.average,
+                'autoscale': self.autoscale,
+                'ymin': self.ymin,
+                'ymax': self.ymax,
+                'colors': color_name2hex(self.colors),
+                'labels': self.labels,
+                'widths': self.widths,		 		
+		 		
             },
+#             'data': {
+#                 'streams': {
+#                     '0': streams,
+#             	}
+#             }
             'data': {
-                'streams': {
-                    '0': stream_0,
-            	}
+                'streams': streams
             }
         }
 

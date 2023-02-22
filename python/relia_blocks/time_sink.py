@@ -142,10 +142,13 @@ class abstract_time_sink(gr.sync_block):
         }
 
         for pos, input_item in enumerate(input_items):
+            #print (pos)
             streams[pos] = {
                 'real': [ str(num.real) for num in input_item],
                 'imag': [ str(num.imag) for num in input_item],
             }
+        #print(np.shape(input_items))
+            #print(streams[0])
 
         data = {
             'block_type': 'relia_time_sink_x',
