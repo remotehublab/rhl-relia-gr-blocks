@@ -135,7 +135,7 @@ parameters:
     label: Line 1 Color
     category: Config
     dtype: enum
-    options: ['blue', 'red', 'green', 'black', 'cyan', 'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
+    options: ['"blue"', '"red"', '"green"', '"black"', '"cyan"', '"magenta"', '"yellow"', '"dark red"', '"dark green"', '"dark blue"']
     option_labels: [Blue, Red, Green, Black, Cyan, Magenta, Yellow, Dark Red, Dark
             Green, Dark Blue]
     hide: ${ ('part' if int(nconnections) >= 1 else 'all') }
