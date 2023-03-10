@@ -60,15 +60,22 @@ class abstract_freq_sink(gr.sync_block):
         # input_items_bytes = input_items[0].tobytes()
         # self._rdb.set('relia-time-sink-0', input_items_bytes)
 
+
         streams = {
             # 0: {
             #     'real': [ str(num) for num in input_items[0] ]
             #     'imag': [ str(num) for num in input_items[0] ]
             # }
         }
-        for pos, input_item in enumerate(relia_fft(input_items)):
+        #print (np.shape(input_items),type(input_items),"Freq raw")
+        temp=relia_fft(input_items,self.fftsize)
+        #fft_input_items=relia_fft(temp2)
+
+        #print (np.shape(temp),type(temp),"Freq")
+
+        for pos, input_item in enumerate(temp):
             streams[pos] = {
-                'real': [ str(num.real) for num in input_item],
+                'real': [ str(num) for num in input_item],
 
             }
         #print(type(input_items))

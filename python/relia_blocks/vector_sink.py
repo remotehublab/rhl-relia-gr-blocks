@@ -108,28 +108,44 @@ class vector_sink_f(gr.sync_block):
             print('*' * 100)
             print()
 
-#        stream_0 = []
-#        if len(input_items[0]):
-#            stream_0 = [ str(num) for num in input_items[0][-1] ]
-
+#        print (np.shape(input_items[:,0,:]),"Vector")
+        input_items2=np.array(input_items)
+        input_items3=input_items2[:,0,:]
+        input_items4=input_items3.tolist()
+        #print (np.shape(input_items4),type(input_items4),"Vector raw")
+        #print (input_items4,"Vector")
         streams = {
             # 0: {
+            #     'real': [ str(num) for num in input_items[0] ]
+            #     'imag': [ str(num) for num in input_items[0] ]
             # }
         }
-        x,y,z=np.shape(input_items)
-        temp=np.reshape(np.array(input_items),(x,y*z))
-        temp=temp[:,:self.vlen]
-        temp=temp.tolist()
+        for pos, input_item in enumerate(input_items4):
+            #print (type(input_items4),"Vector")
+            streams[pos] = {
+                'x': [ str(num) for num in input_item],
+            }
+
+
+#        streams = {
+            # 0: {
+            # }
+#        }
+        #x,y,z=np.shape(input_items)
+        #temp=np.reshape(np.array(input_items),(x,y*z))
+        #temp=temp[:,:self.vlen]
+        #temp=temp.tolist()
         #print(x,y,z)
         #print(np.shape(input_items.squeeze()[[0, 2]]))
         #temp=np.array([input_items[0][0][i] for i in range(self.nconnections)] + [input_items[0][2][i] for i in range(self.nconnections)])
-        #print (np.shape(temp))
-        for pos, input_item in enumerate(temp):
-             streams[pos] = {
-                 '0': [ str(num) for num in input_item],
-             }
+        #print (np.shape(input_items),type(input_items),"Vector")
+#        for pos, input_item in enumerate(input_items):
+#             streams[pos] = {
+#                 '0': [ str(num) for num in input_item],
+#             }
              #print(streams[0])
-        #print(type(streams))
+        #print (np.shape(stream_0),type(stream_0[0]),"Vector")
+        #print (stream_0[0],len(stream_0[3]),"Vector")
 
         data = {
             'block_type': 'relia_vector_sink_f',
@@ -157,9 +173,10 @@ class vector_sink_f(gr.sync_block):
             },
 #             'data': {
 #                 'streams': {
-#                     '0': streams,
+#                     '0': stream_0,
 #             	}
 #             }
+#        }
             'data': {
                 'streams': streams
             }

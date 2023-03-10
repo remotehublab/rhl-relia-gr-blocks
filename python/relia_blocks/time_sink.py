@@ -14,7 +14,7 @@ class abstract_time_sink(gr.sync_block):
 
     def __init__(self, nop=1024, srate=32*1024, name="", ylabel="Amplitude", yunit="", grid=False, autoscale=False, ymin=" ", ymax=" ", axislabels=True, colors=[],labels=[],widths=[],styles=[],markers=[], nconnections=1, *args, **kwargs):
 
-        print(args, kwargs)
+        #print(args, kwargs)
 
         gr.sync_block.__init__(
             self, 
@@ -140,15 +140,16 @@ class abstract_time_sink(gr.sync_block):
             #     'imag': [ str(num) for num in input_items[0] ]
             # }
         }
-
+        #print (np.shape(input_items),type(input_items),"Time")
+        #print (np.real(input_items),"Time")
         for pos, input_item in enumerate(input_items):
-            #print (pos)
+            #print (type(input_items),"Time")
             streams[pos] = {
-                'real': [ str(num.real) for num in input_item],
-                'imag': [ str(num.imag) for num in input_item],
+                'real': [ str(np.real(num)) for num in input_item],
+                'imag': [ str(np.imag(num)) for num in input_item],
             }
         #print(np.shape(input_items))
-            #print(streams[0])
+        #print(type(streams))
 
         data = {
             'block_type': 'relia_time_sink_x',

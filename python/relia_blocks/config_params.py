@@ -66,5 +66,15 @@ def marker_number2shape(markername):
 		marker_output.append(marker_table[markername[i]])
 	return marker_output
 		
-def relia_fft(datain):
-	return  10 * np.log10(abs(np.fft.fftshift(np.fft.fft(datain)))**2)
+def relia_fft(datain,fftsize):
+    x,y=np.shape(datain)
+    #print (x,y)
+    if y>fftsize:
+        temp=np.array(datain)
+        temp2=temp[:,0:fftsize]
+        ffttemp=10 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(temp2[:,0:fftsize])))**2)
+        #print (np.shape(datain[:,0:fftsize]),"fdsfd")
+        return  ffttemp.tolist()
+    else:
+        print("low")
+        return  10 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(datain)))**2)
