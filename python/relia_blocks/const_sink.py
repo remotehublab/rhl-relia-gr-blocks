@@ -69,10 +69,14 @@ class abstract_const_sink(gr.sync_block):
             # }
         }
 
+        x,y=np.shape(input_items) 
+        if y>self.nop:
+            input_items=adapt_array(input_items,self.nop)
+
         for pos, input_item in enumerate(input_items):
             streams[pos] = {
-                'real': [ str(np.real(num)) for num in input_item],
-                'imag': [ str(np.imag(num)) for num in input_item],
+                'real': [ str(num.real) for num in input_item],
+                'imag': [ str(num.imag) for num in input_item],
             }
 
         data = {

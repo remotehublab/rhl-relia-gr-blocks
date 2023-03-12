@@ -43,7 +43,14 @@ marker_table = {    '-1':'none' ,
     '5':'polygon',
     }
 
+average_table = { 1.0:1.0,
+    0.2:2.0,
+    0.1:4.0,
+    0.05:8.0,
+}
 
+def average_n2n(avginput):
+    return average_table[avginput]
 
 def color_name2hex(coloraname):
 	l=len(coloraname)
@@ -65,16 +72,21 @@ def marker_number2shape(markername):
 	for i in range(l):
 		marker_output.append(marker_table[markername[i]])
 	return marker_output
-		
-def relia_fft(datain,fftsize):
+
+#This function fix the size of the vector to the length in GRC
+def adapt_array(mydatain,mylen):
+    temp=np.array(mydatain)
+    temp2=temp[:,0:mylen]
+    return  np.ndarray.tolist(temp2)
+
+
+def relia_fft(datain,fftsize,nconnections):
     x,y=np.shape(datain)
     #print (x,y)
     if y>fftsize:
         temp=np.array(datain)
         temp2=temp[:,0:fftsize]
-        ffttemp=10 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(temp2[:,0:fftsize])))**2)
-        #print (np.shape(datain[:,0:fftsize]),"fdsfd")
-        return  ffttemp.tolist()
+        ffttemp=10 * np.log10(np.abs(np.square(np.fft.fftshift(np.fft.fft(temp2[:,0:fftsize])))/fftsize))
+        return  np.ndarray.tolist(ffttemp)
     else:
-        print("low")
-        return  10 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(datain)))**2)
+        return  np.ndarray.tolist(np.zeros((nconnections,fftsize)))

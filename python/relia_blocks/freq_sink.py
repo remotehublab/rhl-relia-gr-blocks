@@ -11,7 +11,7 @@ class abstract_freq_sink(gr.sync_block):
 
     input_data_type = None
 
-    def __init__(self, fftsize=512, wintype="window.WIN_BLACKMAN_hARRIS", fc=0, bw=1,name="",label="",units="",grid=False, autoscale=False,ymin=" ", ymax=" ",axislabels=True, colors=[],labels=[],widths=[], nconnections=1, *args, **kwargs):
+    def __init__(self, fftsize=512, wintype="window.WIN_BLACKMAN_hARRIS", fc=0, bw=1,name="",label="",units="",grid=False, autoscale=False,ymin=" ", ymax=" ",axislabels=True, average=1.0,colors=[],labels=[],widths=[], nconnections=1, *args, **kwargs):
 
         print(args, kwargs)
 
@@ -42,6 +42,7 @@ class abstract_freq_sink(gr.sync_block):
         self.widths = widths
         self.nconnections = nconnections
         self.labels = labels
+        self.average=average
         
 
     def get_autoscale(self):
@@ -68,17 +69,18 @@ class abstract_freq_sink(gr.sync_block):
             # }
         }
         #print (np.shape(input_items),type(input_items),"Freq raw")
-        temp=relia_fft(input_items,self.fftsize)
+        input_items=relia_fft(input_items,self.fftsize,self.nconnections)
+
         #fft_input_items=relia_fft(temp2)
 
         #print (np.shape(temp),type(temp),"Freq")
 
-        for pos, input_item in enumerate(temp):
+        for pos, input_item in enumerate(input_items):
             streams[pos] = {
                 'real': [ str(num) for num in input_item],
 
             }
-        #print(type(input_items))
+        #print(np.shape(streams))
 
         data = {
             'block_type': 'relia_freq_sink_x',
@@ -100,7 +102,8 @@ class abstract_freq_sink(gr.sync_block):
                 'colors': color_name2hex(self.colors),     
                 'labels': self.labels,   
                 'widths': self.widths,   
-                'nconnections': self.nconnections,                                
+                'nconnections': self.nconnections,  
+                'average': average_n2n(self.average),                              
             },
             'data': {
                 'streams': streams

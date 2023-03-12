@@ -109,11 +109,17 @@ class vector_sink_f(gr.sync_block):
             print()
 
 #        print (np.shape(input_items[:,0,:]),"Vector")
+
         input_items2=np.array(input_items)
         input_items3=input_items2[:,0,:]
-        input_items4=input_items3.tolist()
+        input_items4=np.ndarray.tolist(input_items3)
         #print (np.shape(input_items4),type(input_items4),"Vector raw")
         #print (input_items4,"Vector")
+
+        x,y=np.shape(input_items4) 
+        if y>self.vlen:
+            input_items4=adapt_array(input_items4,self.vlen)
+
         streams = {
             # 0: {
             #     'real': [ str(num) for num in input_items[0] ]

@@ -140,13 +140,17 @@ class abstract_time_sink(gr.sync_block):
             #     'imag': [ str(num) for num in input_items[0] ]
             # }
         }
-        #print (np.shape(input_items),type(input_items),"Time")
         #print (np.real(input_items),"Time")
+        x,y=np.shape(input_items) 
+        if y>self.nop:
+            input_items=adapt_array(input_items,self.nop)
+
+        #print (np.shape(temp),type(input_items),"Time")
         for pos, input_item in enumerate(input_items):
             #print (type(input_items),"Time")
             streams[pos] = {
-                'real': [ str(np.real(num)) for num in input_item],
-                'imag': [ str(np.imag(num)) for num in input_item],
+                'real': [ str(num.real) for num in input_item],
+                'imag': [ str(num.imag) for num in input_item],
             }
         #print(np.shape(input_items))
         #print(type(streams))
