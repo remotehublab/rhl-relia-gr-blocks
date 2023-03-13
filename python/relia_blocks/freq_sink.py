@@ -103,7 +103,7 @@ class abstract_freq_sink(gr.sync_block):
                 'labels': self.labels,   
                 'widths': self.widths,   
                 'nconnections': self.nconnections,  
-                'average': average_n2n(self.average),                              
+                'average': average_n2n(self.average), 
             },
             'data': {
                 'streams': streams

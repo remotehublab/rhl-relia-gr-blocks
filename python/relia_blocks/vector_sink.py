@@ -168,7 +168,7 @@ class vector_sink_f(gr.sync_block):
                 'y_units': self.y_units,
                 'ref_level': self.ref_level,
                 'grid': self.grid,
-                'average': self.average,
+                'average': average_n2n(self.average),
                 'autoscale': self.autoscale,
                 'ymin': self.ymin,
                 'ymax': self.ymax,
