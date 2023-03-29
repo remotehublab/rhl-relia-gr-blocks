@@ -31,6 +31,9 @@ else:
 # From gnuradio.core.Constants
 DEFAULT_HIER_BLOCK_LIB_DIR = os.path.expanduser('~/.grc_gnuradio')
 
+if not os.path.exists(DEFAULT_HIER_BLOCK_LIB_DIR):
+    os.mkdir(DEFAULT_HIER_BLOCK_LIB_DIR)
+
 if 'windows' in platform.system().lower():
     for filename in glob.glob(os.path.join(repo_dir, "blocks", "*.block.yml")):
         base_filename = os.path.basename(filename)
