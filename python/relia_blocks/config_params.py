@@ -90,3 +90,22 @@ def relia_fft(datain,fftsize,nconnections):
         return  np.ndarray.tolist(ffttemp)
     else:
         return  np.ndarray.tolist(np.zeros((nconnections,fftsize)))
+
+def relia_autocorr(datain,L,useDB):
+    #print(datain)
+    x,y=np.shape(datain)
+    if y<1024:
+        return np.ndarray.tolist(np.zeros((1,L)))
+    else:
+        myfft=np.square(abs(np.fft.fft(datain)))
+        mycorr=np.real(np.fft.ifft(myfft))
+        temp=np.array(mycorr)
+        temp2=temp[:,0:L]
+        if useDB:
+            temp2=10*np.log10(temp2)
+            temp2[np.isnan(temp2)] = 0
+        else:
+            temp2=temp2/np.max(temp2)
+        #print (temp2)
+        return np.ndarray.tolist(temp2)
+
