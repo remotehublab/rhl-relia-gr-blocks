@@ -67,7 +67,7 @@ class eye_plot(gr.sync_block):
 
         for pos, input_item in enumerate(input_items):
             streams[pos] = {
-                'real': [ str(num.real) for num in input_item],
+                'real': [ str(np.real(num)) for num in input_item],
             }
 
         data = {

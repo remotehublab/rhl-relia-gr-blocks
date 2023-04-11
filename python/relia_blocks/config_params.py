@@ -102,7 +102,7 @@ def relia_autocorr(datain,L,useDB):
         temp=np.array(mycorr)
         temp2=temp[:,0:L]
         if useDB:
-            temp2=10*np.log10(temp2)
+            temp2=20*np.log10(np.abs(temp2))
             temp2[np.isnan(temp2)] = 0
         else:
             temp2=temp2/np.max(temp2)
