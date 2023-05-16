@@ -97,7 +97,7 @@ class DataDownloader(DataExchanger):
             time.sleep(0.5) # Do not check again immediately
             return
 
-        if !(self.session_identifier == 'my-session-id' && self.device_identifier == 'my-device-id'):
+        if self.session_identifier != 'my-session-id' and self.device_identifier != 'my-device-id':
             for block_identifier, block_data_list in response['data'].items():
                 if block_identifier in self.blocks:
                     for block_data in block_data_list:
