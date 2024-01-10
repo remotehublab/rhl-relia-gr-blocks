@@ -29,11 +29,12 @@ class DataExchanger:
         self.configuration = json.load(open('relia.json'))
         self.uploader_base_url = self.configuration['uploader_base_url']
         self.session_identifier = self.configuration['session_id']
+        self.task_identifier = self.configuration['task_id']
         self.device_identifier = self.configuration['device_id']
 
 class DataUploader(DataExchanger):
     def upload_block_data(self, block_identifier: str, data: dict):
-        url = self.uploader_base_url + f'/api/upload/sessions/{self.session_identifier}/devices/{self.device_identifier}/blocks/{block_identifier}'
+        url = self.uploader_base_url + f'/api/upload/sessions/{self.session_identifier}/tasks/{self.task_identifier}/devices/{self.device_identifier}/blocks/{block_identifier}'
         result = requests.post(url, json=data).json()
         if not result['success']:
             logger.error("Error in request to {url}: {result}")
@@ -84,7 +85,7 @@ class DataDownloader(DataExchanger):
             return
 
         blocking_str = '1' if blocking else '0'
-        url = self.uploader_base_url + f'/api/download/sessions/{self.session_identifier}/devices/{self.device_identifier}?blocking={blocking_str}'
+        url = self.uploader_base_url + f'/api/download/sessions/{self.session_identifier}/tasks/{self.task_identifier}/devices/{self.device_identifier}?blocking={blocking_str}'
         try:
             response = requests.get(url).json()
             if not response['success']:
